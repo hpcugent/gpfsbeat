@@ -12,13 +12,14 @@ import (
 	"github.com/itkovian/gpfsbeat/config"
 )
 
+// Gpfsbeat generated structure
 type Gpfsbeat struct {
 	done   chan struct{}
 	config config.Config
 	client publisher.Client
 }
 
-// Creates beater
+// New Creates beater
 func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	config := config.DefaultConfig
 	if err := cfg.Unpack(&config); err != nil {
@@ -26,12 +27,13 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	}
 
 	bt := &Gpfsbeat{
-		done: make(chan struct{}),
+		done:   make(chan struct{}),
 		config: config,
 	}
 	return bt, nil
 }
 
+// Run does the actual things
 func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 	logp.Info("gpfsbeat is running! Hit CTRL-C to stop it.")
 
@@ -45,10 +47,22 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		case <-ticker.C:
 		}
 
+		gpfsQuota, err := bt.MmRepQuota() // TODO: get this for each filesystem
+		logp.Warn("retrieved quota information from mmrepquota")
+		if err != nil {
+			panic("Could not get quota information")
+		}
+
+		quota := make([]common.MapStr, 0, len(gpfsQuota))
+		for _, q := range gpfsQuota {
+			quota = append(quota, bt.GetQuotaEvent(&q))
+		}
+
 		event := common.MapStr{
 			"@timestamp": common.Time(time.Now()),
 			"type":       b.Name,
 			"counter":    counter,
+			"quota":      quota,
 		}
 		bt.client.PublishEvent(event)
 		logp.Info("Event sent")
@@ -56,6 +70,7 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 	}
 }
 
+// Stop shuts down the beat
 func (bt *Gpfsbeat) Stop() {
 	bt.client.Close()
 	close(bt.done)

@@ -5,10 +5,14 @@ package config
 
 import "time"
 
+// Config items
 type Config struct {
-	Period time.Duration `config:"period"`
+	Period     time.Duration `config:"period"`
+	Filesystem string        `config:"filesystem"`
 }
 
+// DefaultConfig should be overridden
 var DefaultConfig = Config{
-	Period: 1 * time.Second,
+	Period:     1 * time.Second,
+	Filesystem: "/",
 }
