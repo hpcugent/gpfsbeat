@@ -53,19 +53,17 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 			panic("Could not get quota information")
 		}
 
-		quota := make([]common.MapStr, 0, len(gpfsQuota))
 		for _, q := range gpfsQuota {
-			quota = append(quota, bt.GetQuotaEvent(&q))
+			quota := bt.GetQuotaEvent(&q)
+			event := common.MapStr{
+				"@timestamp": common.Time(time.Now()),
+				"type":       b.Name,
+				"counter":    counter,
+				"quota":      quota,
+			}
+			bt.client.PublishEvent(event)
 		}
-
-		event := common.MapStr{
-			"@timestamp": common.Time(time.Now()),
-			"type":       b.Name,
-			"counter":    counter,
-			"quota":      quota,
-		}
-		bt.client.PublishEvent(event)
-		logp.Info("Event sent")
+		logp.Info("Events sent")
 		counter++
 	}
 }

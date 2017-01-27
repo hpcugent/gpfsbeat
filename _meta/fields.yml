@@ -1,6 +1,6 @@
 - key: gpfsbeat
   title: gpfsbeat
-  description:
+  description: beat for storing GPFS information into ELK
   fields:
     - name: counter
       type: long
