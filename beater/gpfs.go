@@ -34,7 +34,7 @@ type QuotaInfo struct {
 // MmRepQuota is a wrapper around the mmrepquota command
 func (bt *Gpfsbeat) MmRepQuota() ([]QuotaInfo, error) {
 
-	cmd := exec.Command("mmrepquota", "-Y", bt.config.Filesystem) // TODO: pass arguments
+	cmd := exec.Command("/usr/lpp/mmfs/bin/mmrepquota", "-Y", bt.config.Filesystem) // TODO: pass arguments
 	var out bytes.Buffer
 	cmd.Stdout = &out
 

@@ -26,6 +26,7 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 		return nil, fmt.Errorf("Error reading config file: %v", err)
 	}
 	logp.Info("Checking quota for filesystem %s", config.Filesystem)
+	logp.Info("Running every %d nanoseconds", config.Period)
 
 	bt := &Gpfsbeat{
 		done:   make(chan struct{}),
