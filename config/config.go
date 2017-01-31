@@ -7,8 +7,9 @@ import "time"
 
 // Config items
 type Config struct {
-	Period     time.Duration `config:"period"`
-	Filesystem string        `config:"filesystem"`
+	Period            time.Duration `config:"period"`
+	Filesystem        string        `config:"filesystem"`
+	MMRepQuotaCommand string        `config:"mmrepquota"`
 }
 
 // DefaultConfig should be overridden
