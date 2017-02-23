@@ -34,22 +34,27 @@ type QuotaInfo struct {
 // MmRepQuota is a wrapper around the mmrepquota command
 func (bt *Gpfsbeat) MmRepQuota() ([]QuotaInfo, error) {
 
-	cmd := exec.Command(bt.config.MMRepQuotaCommand, bt.config.Filesystem) // TODO: pass arguments
-	var out bytes.Buffer
-	cmd.Stdout = &out
-
-	err := cmd.Run()
-	if err != nil {
-		logp.Err("Command mmrepquota did not run correctly!")
-		var nope []QuotaInfo
-		return nope, errors.New("mmrepquota failed")
-	}
-
 	var quotas []QuotaInfo
-	quotas, err = parseMmRepQuota(out.String())
-	if err != nil {
-		var nope []QuotaInfo
-		return nope, errors.New("mmrepquota info could not be parsed")
+	for _, filesystem := range bt.config.Filesystem {
+
+		cmd := exec.Command(bt.config.MMRepQuotaCommand, filesystem) // TODO: pass arguments
+		var out bytes.Buffer
+		cmd.Stdout = &out
+
+		err := cmd.Run()
+		if err != nil {
+			logp.Err("Command mmrepquota did not run correctly!")
+			var nope []QuotaInfo
+			return nope, errors.New("mmrepquota failed")
+		}
+
+		var qs []QuotaInfo
+		qs, err = parseMmRepQuota(out.String())
+		if err != nil {
+			var nope []QuotaInfo
+			return nope, errors.New("mmrepquota info could not be parsed")
+		}
+		quotas = append(quotas, qs...)
 	}
 	return quotas, nil
 }
@@ -112,6 +117,9 @@ func parseMmRepQuota(output string) ([]QuotaInfo, error) {
 			filesHard:  parseCertainInt(fields[fieldMap["filesLimit"]]),
 			filesDoubt: parseCertainInt(fields[fieldMap["filesInDoubt"]]),
 			filesGrace: fields[fieldMap["filesGrace"]],
+		}
+		if qi.kind == "FILESET" {
+			qi.fileset = qi.entity // filesets have no name, and we need to have a link between FILESET and USR quota
 		}
 		qs = append(qs, qi)
 	}
