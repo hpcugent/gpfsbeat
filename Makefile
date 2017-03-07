@@ -1,5 +1,12 @@
-BEATNAME=gpfsbeat
-BEAT_DIR=github.com/itkovian/gpfsbeat
+BEAT_NAME=gpfsbeat
+BEAT_PATH=github.com/hpcugent/gpfsbeat
+BEAT_DESCRIPTION=gpfsbeat is an Elastic Beat that parses GPFS mmrepquota e.a. and sends them to ELK.
+BEAT_URL=https://github.com/hpcugent/gpfsbeat
+BEAT_DOC_URL=https://github.com/hpcugent/gpfsbeat
+BEAT_LICENSE=ASL 2.0
+BEAT_VENDOR=HPCUgent
+
+
 SYSTEM_TESTS=false
 TEST_ENVIRONMENT=false
 ES_BEATS?=./vendor/github.com/elastic/beats
