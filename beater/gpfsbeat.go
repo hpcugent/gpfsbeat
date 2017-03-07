@@ -9,7 +9,7 @@ import (
 	"github.com/elastic/beats/libbeat/logp"
 	"github.com/elastic/beats/libbeat/publisher"
 
-	"github.com/itkovian/gpfsbeat/config"
+	"github.com/hpcugent/gpfsbeat/config"
 )
 
 // Gpfsbeat generated structure
