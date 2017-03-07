@@ -3,7 +3,7 @@
 Welcome to Gpfsbeat.
 
 Ensure that this folder is at the following location:
-`${GOPATH}/github.com/itkovian`
+`${GOPATH}/github.com/hpcugent`
 
 ## Getting Started with Gpfsbeat
 
@@ -24,7 +24,7 @@ It will create a clean git history for each major step. Note that you can always
 To push Gpfsbeat in the git repository, run the following commands:
 
 ```
-git remote set-url origin https://github.com/itkovian/gpfsbeat
+git remote set-url origin https://github.com/hpcugent/gpfsbeat
 git push origin master
 ```
 
@@ -99,9 +99,9 @@ make clean
 To clone Gpfsbeat from the git repository, run the following commands:
 
 ```
-mkdir -p ${GOPATH}/github.com/itkovian
-cd ${GOPATH}/github.com/itkovian
-git clone https://github.com/itkovian/gpfsbeat
+mkdir -p ${GOPATH}/github.com/hpcugent
+cd ${GOPATH}/github.com/hpcugent
+git clone https://github.com/hpcugent/gpfsbeat
 ```
 
 
