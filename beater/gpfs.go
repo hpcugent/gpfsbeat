@@ -37,13 +37,15 @@ func (bt *Gpfsbeat) MmRepQuota() ([]QuotaInfo, error) {
 	var quotas []QuotaInfo
 	for _, filesystem := range bt.config.Filesystem {
 
-		cmd := exec.Command(bt.config.MMRepQuotaCommand, filesystem) // TODO: pass arguments
+		logp.Info("Running mmrepquota for filesystem %s", filesystem)
+
+		cmd := exec.Command(bt.config.MMRepQuotaCommand, "-Y", filesystem) // TODO: pass arguments
 		var out bytes.Buffer
 		cmd.Stdout = &out
 
 		err := cmd.Run()
 		if err != nil {
-			logp.Err("Command mmrepquota did not run correctly!")
+			logp.Err("Command mmrepquota did not run correctly for filesystem %s! Aborting.", filesystem)
 			var nope []QuotaInfo
 			return nope, errors.New("mmrepquota failed")
 		}
