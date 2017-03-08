@@ -2,10 +2,12 @@ package beater
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
@@ -39,13 +41,16 @@ func (bt *Gpfsbeat) MmRepQuota() ([]QuotaInfo, error) {
 
 		logp.Info("Running mmrepquota for filesystem %s", filesystem)
 
-		cmd := exec.Command(bt.config.MMRepQuotaCommand, "-Y", filesystem) // TODO: pass arguments
+		ctx, cancel := context.WithTimeout(context.Background(), 20*1000*time.Millisecond)
+		defer cancel()
+
+		cmd := exec.CommandContext(ctx, bt.config.MMRepQuotaCommand, "-Y", filesystem)
 		var out bytes.Buffer
 		cmd.Stdout = &out
 
 		err := cmd.Run()
 		if err != nil {
-			logp.Err("Command mmrepquota did not run correctly for filesystem %s! Aborting.", filesystem)
+			logp.Err("Command mmrepquota did not run correctly for filesystem %s! Aborting. Error: %s", filesystem, err)
 			var nope []QuotaInfo
 			return nope, errors.New("mmrepquota failed")
 		}
