@@ -37,20 +37,20 @@ type QuotaInfo struct {
 func (bt *Gpfsbeat) MmRepQuota() ([]QuotaInfo, error) {
 
 	var quotas []QuotaInfo
-	for _, filesystem := range bt.config.Filesystem {
+	for _, device := range bt.config.Device {
 
-		logp.Info("Running mmrepquota for filesystem %s", filesystem)
+		logp.Info("Running mmrepquota for device %s", device)
 
 		ctx, cancel := context.WithTimeout(context.Background(), 20*1000*time.Millisecond)
 		defer cancel()
 
-		cmd := exec.CommandContext(ctx, bt.config.MMRepQuotaCommand, "-Y", filesystem)
+		cmd := exec.CommandContext(ctx, bt.config.MMRepQuotaCommand, "-Y", device)
 		var out bytes.Buffer
 		cmd.Stdout = &out
 
 		err := cmd.Run()
 		if err != nil {
-			logp.Err("Command mmrepquota did not run correctly for filesystem %s! Aborting. Error: %s", filesystem, err)
+			logp.Err("Command mmrepquota did not run correctly for device %s! Aborting. Error: %s", device, err)
 			var nope []QuotaInfo
 			return nope, errors.New("mmrepquota failed")
 		}

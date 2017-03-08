@@ -25,7 +25,7 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	if err := cfg.Unpack(&config); err != nil {
 		return nil, fmt.Errorf("Error reading config file: %v", err)
 	}
-	logp.Info("Checking quota for filesystem %q", config.Filesystem)
+	logp.Info("Checking quota for device %q", config.Device)
 	logp.Info("Running every %d nanoseconds", config.Period)
 
 	bt := &Gpfsbeat{
@@ -49,7 +49,7 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		case <-ticker.C:
 		}
 
-		gpfsQuota, err := bt.MmRepQuota() // TODO: get this for each filesystem
+		gpfsQuota, err := bt.MmRepQuota() // TODO: get this for each device
 		logp.Warn("retrieved quota information from mmrepquota")
 		if err != nil {
 			panic("Could not get quota information")

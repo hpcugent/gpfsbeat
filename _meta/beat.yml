@@ -5,7 +5,7 @@
 gpfsbeat:
   # Defines how often an event is sent to the output
   period: 60s
-  filesystem: ["/"]
+  device: ["/"]
   metrics:
       - quota
       - filesets
