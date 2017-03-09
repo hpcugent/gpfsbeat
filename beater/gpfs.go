@@ -67,7 +67,7 @@ func (bt *Gpfsbeat) MmRepQuota() ([]QuotaInfo, error) {
 
 	var quotas []QuotaInfo
 
-	for _, device := range bt.config.Device {
+	for _, device := range bt.config.Devices {
 
 		logp.Info("Running mmrepquota for device %s", device)
 

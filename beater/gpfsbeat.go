@@ -2,6 +2,7 @@ package beater
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/elastic/beats/libbeat/beat"
@@ -25,13 +26,27 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	if err := cfg.Unpack(&config); err != nil {
 		return nil, fmt.Errorf("Error reading config file: %v", err)
 	}
-	logp.Info("Checking quota for device %q", config.Device)
+
+	logp.Info("Gathering information from devices %q", config.Devices)
 	logp.Info("Running every %d nanoseconds", config.Period)
 
 	bt := &Gpfsbeat{
 		done:   make(chan struct{}),
 		config: config,
 	}
+
+	// make sure we get the devices, request them from mmlsfs is they are not provided explicitly
+	if len(bt.config.Devices) == 1 && bt.config.Devices[0] == "all" {
+		logp.Info("Requested information from 'all' devices. Gathering devices.")
+		devices, err := bt.MmLsFs()
+		if err != nil {
+			logp.Err("Cannot get required devices information. Stopping.")
+			os.Exit(-1)
+		}
+		bt.config.Devices = devices
+		logp.Info("Renewed devices list: %s", bt.config.Devices)
+	}
+
 	return bt, nil
 }
 
