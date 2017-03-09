@@ -8,12 +8,17 @@ import "time"
 // Config items
 type Config struct {
 	Period            time.Duration `config:"period"`
-	Filesystem        []string      `config:"filesystem"`
+	Devices           []string      `config:"devices"`
 	MMRepQuotaCommand string        `config:"mmrepquota"`
+	MMLsFsCommand     string        `config:"mmlsfs"`
+	MMDfCommand       string        `config:"mmsf"`
 }
 
 // DefaultConfig should be overridden
 var DefaultConfig = Config{
-	Period:     1 * time.Second,
-	Filesystem: []string{"/"},
+	Period:            1 * time.Second,
+	Devices:           []string{"all"},
+	MMRepQuotaCommand: "mmrepquota",
+	MMLsFsCommand:     "mmlsfs",
+	MMDfCommand:       "mmdf",
 }
