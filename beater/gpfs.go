@@ -14,8 +14,8 @@ import (
 )
 
 var debugf = logp.MakeDebug("gpfs")
-var mmrepquotaTimeOut = 5 * 1000 * time.Millisecond
-var mmlsfsTimeout = 1 * 1000 * time.Millisecond
+var mmrepquotaTimeOut = 5 * 60 * 1000 * time.Millisecond
+var mmlsfsTimeout = 1 * 60 * 1000 * time.Millisecond
 
 // QuotaInfo contains the information of a single entry produced by mmrepquota
 type QuotaInfo struct {
