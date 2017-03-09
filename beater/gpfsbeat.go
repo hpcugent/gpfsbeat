@@ -11,6 +11,7 @@ import (
 	"github.com/elastic/beats/libbeat/publisher"
 
 	"github.com/hpcugent/gpfsbeat/config"
+	"github.com/hpcugent/gpfsbeat/parser"
 )
 
 // Gpfsbeat generated structure
@@ -64,14 +65,14 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		case <-ticker.C:
 		}
 
-		gpfsQuota, err := bt.MmRepQuota() // TODO: get this for each device
+		gpfsQuota, err := bt.MmRepQuota()
 		logp.Warn("retrieved quota information from mmrepquota")
 		if err != nil {
 			panic("Could not get quota information")
 		}
 
 		for _, q := range gpfsQuota {
-			quota := bt.GetQuotaEvent(&q)
+			quota := parser.GetQuotaEvent(&q)
 			event := common.MapStr{
 				"@timestamp": common.Time(time.Now()),
 				"type":       b.Name,
