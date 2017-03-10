@@ -74,3 +74,6 @@ func (bt *Gpfsbeat) MmRepQuota() ([]parser.QuotaInfo, error) {
 	}
 	return quotas, nil
 }
+
+// MmDf is a wrapper around the mmdf command
+func (bt *Gpfsbeat) MmDf() (parser.MmDfInfo, error) {}
