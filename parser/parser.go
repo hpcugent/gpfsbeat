@@ -4,10 +4,15 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
 )
 
-type parseCallBack func([]string, map[string]int) interface{}
+// ParseResult represents the result of parsing one or more output lines from a GPFS command
+type ParseResult interface {
+	ToMapStr() common.MapStr
+}
+type parseCallBack func([]string, map[string]int) ParseResult
 
 // parseCertainInt parses a string into an integer value, and discards the error
 func parseCertainInt(s string) int64 {

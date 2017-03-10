@@ -11,7 +11,6 @@ import (
 	"github.com/elastic/beats/libbeat/publisher"
 
 	"github.com/hpcugent/gpfsbeat/config"
-	"github.com/hpcugent/gpfsbeat/parser"
 )
 
 // Gpfsbeat generated structure
@@ -72,7 +71,7 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		}
 
 		for _, q := range gpfsQuota {
-			quota := parser.GetQuotaEvent(&q)
+			quota := q.ToMapStr()
 			event := common.MapStr{
 				"@timestamp": common.Time(time.Now()),
 				"type":       b.Name,

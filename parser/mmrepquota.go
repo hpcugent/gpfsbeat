@@ -22,27 +22,27 @@ type QuotaInfo struct {
 	filesGrace string
 }
 
-// GetQuotaEvent turns the quota information into a MapStr
-func GetQuotaEvent(quota *QuotaInfo) common.MapStr {
+// ToMapStr turns the quota information into a common.MapStr
+func (q *QuotaInfo) ToMapStr() common.MapStr {
 	return common.MapStr{
-		"filesystem":    quota.filesystem,
-		"fileset":       quota.fileset,
-		"kind":          quota.kind,
-		"entity":        quota.entity,
-		"block_usage":   quota.blockUsage,
-		"block_soft":    quota.blockSoft,
-		"block_hard":    quota.blockHard,
-		"block_doubt":   quota.blockDoubt,
-		"block_expired": quota.blockGrace,
-		"files_usage":   quota.filesUsage,
-		"files_soft":    quota.filesSoft,
-		"files_hard":    quota.filesHard,
-		"files_doubt":   quota.filesDoubt,
-		"files_expired": quota.filesGrace,
+		"filesystem":    q.filesystem,
+		"fileset":       q.fileset,
+		"kind":          q.kind,
+		"entity":        q.entity,
+		"block_usage":   q.blockUsage,
+		"block_soft":    q.blockSoft,
+		"block_hard":    q.blockHard,
+		"block_doubt":   q.blockDoubt,
+		"block_expired": q.blockGrace,
+		"files_usage":   q.filesUsage,
+		"files_soft":    q.filesSoft,
+		"files_hard":    q.filesHard,
+		"files_doubt":   q.filesDoubt,
+		"files_expired": q.filesGrace,
 	}
 }
 
-func parseMmRepQuotaCallback(fields []string, fieldMap map[string]int) interface{} {
+func parseMmRepQuotaCallback(fields []string, fieldMap map[string]int) ParseResult {
 	qi := QuotaInfo{
 		filesystem: fields[fieldMap["filesystemName"]],
 		fileset:    fields[fieldMap["filesetname"]],
@@ -62,11 +62,11 @@ func parseMmRepQuotaCallback(fields []string, fieldMap map[string]int) interface
 	if qi.kind == "FILESET" {
 		qi.fileset = qi.entity // filesets have no name, and we need to have a link between FILESET and USR quota
 	}
-	return qi
+	return &qi
 }
 
 // ParseMmRepQuota converts the lines into the desired information
-func ParseMmRepQuota(output string) ([]QuotaInfo, error) {
+func ParseMmRepQuota(output string) ([](QuotaInfo), error) {
 
 	var prefixFieldlocation = 0
 	var identifierFieldLocation = 1
@@ -74,9 +74,9 @@ func ParseMmRepQuota(output string) ([]QuotaInfo, error) {
 
 	qs, _ := parseGpfsYOutput(prefixFieldlocation, identifierFieldLocation, headerFieldLocation, "mmrepquota", output, parseMmRepQuotaCallback)
 
-	var quotaInfos = make([]QuotaInfo, 0, len(qs))
+	var quotaInfos = make([](QuotaInfo), 0, len(qs))
 	for _, q := range qs {
-		quotaInfos = append(quotaInfos, q.(QuotaInfo))
+		quotaInfos = append(quotaInfos, *(q.(*QuotaInfo)))
 	}
 
 	return quotaInfos, nil
