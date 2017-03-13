@@ -1,10 +1,8 @@
 package parser
 
-import "github.com/elastic/beats/libbeat/common"
-
-// DfInfo contains the relevant information obtained in a single run of mmdf
-type DfInfo interface {
-}
+import (
+	"github.com/elastic/beats/libbeat/common"
+)
 
 // MmDfNSDInfo represents the `nsd` output line information
 type MmDfNSDInfo struct {
@@ -22,6 +20,24 @@ type MmDfNSDInfo struct {
 	diskAvailableForAlloc   string // no idea what this should be
 }
 
+// ToMapStr turns the nsd information into a common.MapStr
+func (m *MmDfNSDInfo) ToMapStr() common.MapStr {
+	return common.MapStr{
+		"version":                   m.version,
+		"nsd_name":                  m.nsdname,
+		"storage_pool":              m.storagePool,
+		"disk_size":                 m.diskSize,
+		"failure_group":             m.failureGroup,
+		"metadata":                  m.metadata,
+		"data":                      m.data,
+		"free_blocks":               m.freeBlocks,
+		"free_blocks_percentage":    m.freeBlocksPercentage,
+		"free_fragments":            m.freeFragments,
+		"free_fragments_percentage": m.freeFragmentsPercentage,
+		"info_type":                 "nsd",
+	}
+}
+
 // MmDfPoolTotalInfo represent the `poolTotal` output line information
 type MmDfPoolTotalInfo struct {
 	version                 int64
@@ -34,6 +50,21 @@ type MmDfPoolTotalInfo struct {
 	maxDiskSize             int64
 }
 
+// ToMapStr turns the pool total information into a common.MapStr
+func (m *MmDfPoolTotalInfo) ToMapStr() common.MapStr {
+	return common.MapStr{
+		"version":                   m.version,
+		"pool_name":                 m.poolName,
+		"pool_size":                 m.poolSize,
+		"free_blocks":               m.freeBlocks,
+		"free_blocks_percentage":    m.freeBlocksPercentage,
+		"free_fragments":            m.freeFragments,
+		"free_fragments_percentage": m.freeFragmentsPercentage,
+		"max_disk_size":             m.maxDiskSize,
+		"info_type":                 "pooltotal",
+	}
+}
+
 // MmDfFsTotalInfo represents the `fstotal` output line information
 type MmDfFsTotalInfo struct {
 	version                 int64
@@ -42,6 +73,20 @@ type MmDfFsTotalInfo struct {
 	freeBlocksPercentage    int64
 	freeFragments           int64
 	freeFragmentsPercentage int64
+}
+
+// ToMapStr turns the fs total information into a common.MapStr
+func (m *MmDfFsTotalInfo) ToMapStr() common.MapStr {
+	return common.MapStr{
+		"version":                   m.version,
+		"fs_size":                   m.fsSize,
+		"free_blocks":               m.freeBlocks,
+		"free_blocks_percentage":    m.freeBlocksPercentage,
+		"free_fragments":            m.freeFragments,
+		"free_fragments_percentage": m.freeFragmentsPercentage,
+		"info_type":                 "fstotal",
+	}
+
 }
 
 // MmDfInodeInfo represents the `inode` ouput line information
@@ -53,30 +98,86 @@ type MmDfInodeInfo struct {
 	maxInodes       int64
 }
 
-// GetDfEvent turns the mmdf information into a MapStr
-func GetDfEvent(dfinfo *DfInfo) common.MapStr {
-	return common.MapStr{}
-
+// ToMapStr turns the inode information into a common.MapStr
+func (m *MmDfInodeInfo) ToMapStr() common.MapStr {
+	return common.MapStr{
+		"version":          m.version,
+		"used_inodes":      m.usedInodes,
+		"free_inodes":      m.freeInodes,
+		"allocated_inodes": m.allocatedInodes,
+		"max_inodex":       m.maxInodes,
+		"info_type":        "inodes",
+	}
 }
 
-func parseMmDfInfoCallback(fields []string, fieldMap map[string]int) interface{} {
+func parseMmDfCallback(fields []string, fieldMap map[string]int) ParseResult {
 
+	var identifierFieldLocation = 1
+
+	switch fields[identifierFieldLocation] {
+	case "nsd":
+		return &MmDfNSDInfo{
+			version:                 parseCertainInt(fields[fieldMap["version"]]),
+			nsdname:                 fields[fieldMap["nsdName"]],
+			storagePool:             fields[fieldMap["storagePool"]],
+			diskSize:                parseCertainInt(fields[fieldMap["diskSize"]]),
+			failureGroup:            parseCertainInt(fields[fieldMap["failureGroup"]]),
+			metadata:                fields[fieldMap["metadata"]] == "Yes",
+			data:                    fields[fieldMap["data"]] == "Yes",
+			freeBlocks:              parseCertainInt(fields[fieldMap["freeBlocks"]]),
+			freeBlocksPercentage:    parseCertainInt(fields[fieldMap["freeBlocksPct"]]),
+			freeFragments:           parseCertainInt(fields[fieldMap["freeFragments"]]),
+			freeFragmentsPercentage: parseCertainInt(fields[fieldMap["freeFragmentsPct"]]),
+			diskAvailableForAlloc:   fields[fieldMap["diskAvailableForAlloc"]],
+		}
+	case "poolTotal":
+		return &MmDfPoolTotalInfo{
+			version:                 parseCertainInt(fields[fieldMap["version"]]),
+			poolName:                fields[fieldMap["poolName"]],
+			poolSize:                parseCertainInt(fields[fieldMap["poolSize"]]),
+			freeBlocks:              parseCertainInt(fields[fieldMap["freeBlocks"]]),
+			freeBlocksPercentage:    parseCertainInt(fields[fieldMap["freeBlocksPct"]]),
+			freeFragments:           parseCertainInt(fields[fieldMap["freeFragments"]]),
+			freeFragmentsPercentage: parseCertainInt(fields[fieldMap["freeFragmentsPct"]]),
+			maxDiskSize:             parseCertainInt(fields[fieldMap["maxDiskSize"]]),
+		}
+	case "fsTotal":
+		return &MmDfFsTotalInfo{
+			version:                 parseCertainInt(fields[fieldMap["version"]]),
+			fsSize:                  parseCertainInt(fields[fieldMap["fsSize"]]),
+			freeBlocks:              parseCertainInt(fields[fieldMap["freeBlocks"]]),
+			freeBlocksPercentage:    parseCertainInt(fields[fieldMap["freeBlocksPct"]]),
+			freeFragments:           parseCertainInt(fields[fieldMap["freeFragments"]]),
+			freeFragmentsPercentage: parseCertainInt(fields[fieldMap["freeFragmentsPct"]]),
+		}
+	case "inode":
+		return &MmDfInodeInfo{
+			version:         parseCertainInt(fields[fieldMap["version"]]),
+			usedInodes:      parseCertainInt(fields[fieldMap["usedInodes"]]),
+			freeInodes:      parseCertainInt(fields[fieldMap["freeInodes"]]),
+			allocatedInodes: parseCertainInt(fields[fieldMap["allocatedInodes"]]),
+			maxInodes:       parseCertainInt(fields[fieldMap["maxInodes"]]),
+		}
+	}
 	return nil
 }
 
 // ParseMmDf converts the lines in the output string into the desired information
-func ParseMmDf(output string) (DfInfo, error) {
+func ParseMmDf(output string) ([]ParseResult, error) {
 
 	var prefixFieldlocation = 0
 	var identifierFieldLocation = 1
 	var headerFieldLocation = 2
 
-	mmdfs, _ := parseGpfsYOutput(prefixFieldlocation, identifierFieldLocation, headerFieldLocation, "mmrepquota", output, parseMmRepQuotaCallback)
+	mmdfs, _ := parseGpfsYOutput(prefixFieldlocation, identifierFieldLocation, headerFieldLocation, "mmdf", output, parseMmDfCallback)
 
-	var quotaInfos = make([]QuotaInfo, 0, len(qs))
-	for _, q := range qs {
-		quotaInfos = append(quotaInfos, q.(QuotaInfo))
+	var dfs = make([]ParseResult, 0, len(mmdfs))
+	for _, info := range mmdfs {
+		if info == nil {
+			continue // line could not be parsed
+		}
+		dfs = append(dfs, info)
 	}
 
-	return quotaInfos, nil	return nil, nil
+	return dfs, nil
 }

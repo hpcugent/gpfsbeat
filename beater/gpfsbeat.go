@@ -65,7 +65,7 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		}
 
 		gpfsQuota, err := bt.MmRepQuota()
-		logp.Warn("retrieved quota information from mmrepquota")
+		logp.Info("retrieved quota information from mmrepquota")
 		if err != nil {
 			panic("Could not get quota information")
 		}
@@ -80,7 +80,26 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 			}
 			bt.client.PublishEvent(event)
 		}
-		logp.Info("Events sent")
+		logp.Info("mmrepquota events sent")
+
+		mmdfinfos, err := bt.MmDf()
+		logp.Info("Retrieved usage information from mmdf")
+		if err != nil {
+			panic("Could not get mmdf information")
+		}
+
+		for _, i := range mmdfinfos {
+			info := i.ToMapStr()
+			event := common.MapStr{
+				"@timestamp": common.Time(time.Now()),
+				"type":       b.Name,
+				"counter":    counter,
+				"mmdf":       info,
+			}
+			bt.client.PublishEvent(event)
+		}
+		logp.Info("mmdf events sent")
+
 		counter++
 	}
 }

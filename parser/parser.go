@@ -60,12 +60,12 @@ func parseGpfsYOutput(
 	headerFieldLocation int,
 	prefix string,
 	output string,
-	fn parseCallBack) ([]interface{}, error) {
+	fn parseCallBack) ([]ParseResult, error) {
 
 	lines := strings.Split(output, "\n")
 	var headerMap = make(map[string](map[string]int))
 
-	result := make([]interface{}, 0, len(lines))
+	result := make([]ParseResult, 0, len(lines))
 
 	for _, line := range lines {
 
