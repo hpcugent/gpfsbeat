@@ -99,7 +99,7 @@ func (bt *Gpfsbeat) MmDf() ([]parser.ParseResult, error) {
 		}
 
 		var qs []parser.ParseResult
-		qs, err = parser.ParseMmDf(out.String())
+		qs, err = parser.ParseMmDf(device, out.String())
 		if err != nil {
 			var nope []parser.ParseResult
 			return nope, errors.New("mmdf info could not be parsed")

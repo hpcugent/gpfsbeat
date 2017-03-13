@@ -6,6 +6,7 @@ import (
 
 // MmDfNSDInfo represents the `nsd` output line information
 type MmDfNSDInfo struct {
+	device                  string
 	version                 int64
 	nsdname                 string
 	storagePool             string
@@ -23,6 +24,7 @@ type MmDfNSDInfo struct {
 // ToMapStr turns the nsd information into a common.MapStr
 func (m *MmDfNSDInfo) ToMapStr() common.MapStr {
 	return common.MapStr{
+		"device":                    m.device,
 		"version":                   m.version,
 		"nsd_name":                  m.nsdname,
 		"storage_pool":              m.storagePool,
@@ -38,8 +40,14 @@ func (m *MmDfNSDInfo) ToMapStr() common.MapStr {
 	}
 }
 
+// UpdateDevice sets the device name
+func (m *MmDfNSDInfo) UpdateDevice(device string) {
+	m.device = device
+}
+
 // MmDfPoolTotalInfo represent the `poolTotal` output line information
 type MmDfPoolTotalInfo struct {
+	device                  string
 	version                 int64
 	poolName                string
 	poolSize                int64
@@ -53,6 +61,7 @@ type MmDfPoolTotalInfo struct {
 // ToMapStr turns the pool total information into a common.MapStr
 func (m *MmDfPoolTotalInfo) ToMapStr() common.MapStr {
 	return common.MapStr{
+		"device":                    m.device,
 		"version":                   m.version,
 		"pool_name":                 m.poolName,
 		"pool_size":                 m.poolSize,
@@ -65,8 +74,14 @@ func (m *MmDfPoolTotalInfo) ToMapStr() common.MapStr {
 	}
 }
 
+// UpdateDevice sets the device name
+func (m *MmDfPoolTotalInfo) UpdateDevice(device string) {
+	m.device = device
+}
+
 // MmDfFsTotalInfo represents the `fstotal` output line information
 type MmDfFsTotalInfo struct {
+	device                  string
 	version                 int64
 	fsSize                  int64
 	freeBlocks              int64
@@ -78,6 +93,7 @@ type MmDfFsTotalInfo struct {
 // ToMapStr turns the fs total information into a common.MapStr
 func (m *MmDfFsTotalInfo) ToMapStr() common.MapStr {
 	return common.MapStr{
+		"device":                    m.device,
 		"version":                   m.version,
 		"fs_size":                   m.fsSize,
 		"free_blocks":               m.freeBlocks,
@@ -89,8 +105,14 @@ func (m *MmDfFsTotalInfo) ToMapStr() common.MapStr {
 
 }
 
+// UpdateDevice sets the device name
+func (m *MmDfFsTotalInfo) UpdateDevice(device string) {
+	m.device = device
+}
+
 // MmDfInodeInfo represents the `inode` ouput line information
 type MmDfInodeInfo struct {
+	device          string
 	version         int64
 	usedInodes      int64
 	freeInodes      int64
@@ -101,6 +123,7 @@ type MmDfInodeInfo struct {
 // ToMapStr turns the inode information into a common.MapStr
 func (m *MmDfInodeInfo) ToMapStr() common.MapStr {
 	return common.MapStr{
+		"device":           m.device,
 		"version":          m.version,
 		"used_inodes":      m.usedInodes,
 		"free_inodes":      m.freeInodes,
@@ -108,6 +131,11 @@ func (m *MmDfInodeInfo) ToMapStr() common.MapStr {
 		"max_inodex":       m.maxInodes,
 		"info_type":        "inodes",
 	}
+}
+
+// UpdateDevice sets the device name
+func (m *MmDfInodeInfo) UpdateDevice(device string) {
+	m.device = device
 }
 
 func parseMmDfCallback(fields []string, fieldMap map[string]int) ParseResult {
@@ -163,7 +191,7 @@ func parseMmDfCallback(fields []string, fieldMap map[string]int) ParseResult {
 }
 
 // ParseMmDf converts the lines in the output string into the desired information
-func ParseMmDf(output string) ([]ParseResult, error) {
+func ParseMmDf(device string, output string) ([]ParseResult, error) {
 
 	var prefixFieldlocation = 0
 	var identifierFieldLocation = 1
@@ -176,6 +204,7 @@ func ParseMmDf(output string) ([]ParseResult, error) {
 		if info == nil {
 			continue // line could not be parsed
 		}
+		info.UpdateDevice(device)
 		dfs = append(dfs, info)
 	}
 
