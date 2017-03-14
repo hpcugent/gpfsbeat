@@ -87,7 +87,7 @@ func (bt *Gpfsbeat) MmDf() ([]parser.ParseResult, error) {
 		ctx, cancel := context.WithTimeout(context.Background(), mmdfTimeout)
 		defer cancel()
 
-		cmd := exec.CommandContext(ctx, bt.config.MMDfCommand, "-Y", device)
+		cmd := exec.CommandContext(ctx, bt.config.MMDfCommand, device, "-Y")
 		var out bytes.Buffer
 		cmd.Stdout = &out
 
