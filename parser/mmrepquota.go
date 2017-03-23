@@ -42,6 +42,9 @@ func (q *QuotaInfo) ToMapStr() common.MapStr {
 	}
 }
 
+// UpdateDevice does not do anything, since we already have that information
+func (q *QuotaInfo) UpdateDevice(device string) {}
+
 func parseMmRepQuotaCallback(fields []string, fieldMap map[string]int) ParseResult {
 	qi := QuotaInfo{
 		filesystem: fields[fieldMap["filesystemName"]],

@@ -11,6 +11,7 @@ import (
 // ParseResult represents the result of parsing one or more output lines from a GPFS command
 type ParseResult interface {
 	ToMapStr() common.MapStr
+	UpdateDevice(string) // in case we need the device information, we should be able to set it if it is not provided
 }
 type parseCallBack func([]string, map[string]int) ParseResult
 
@@ -60,12 +61,12 @@ func parseGpfsYOutput(
 	headerFieldLocation int,
 	prefix string,
 	output string,
-	fn parseCallBack) ([]interface{}, error) {
+	fn parseCallBack) ([]ParseResult, error) {
 
 	lines := strings.Split(output, "\n")
 	var headerMap = make(map[string](map[string]int))
 
-	result := make([]interface{}, 0, len(lines))
+	result := make([]ParseResult, 0, len(lines))
 
 	for _, line := range lines {
 

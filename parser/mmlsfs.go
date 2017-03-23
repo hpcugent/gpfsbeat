@@ -14,6 +14,9 @@ func (m *MmLsFsInfo) ToMapStr() common.MapStr {
 	}
 }
 
+// UpdateDevice does not do anything, since we already have that information
+func (m *MmLsFsInfo) UpdateDevice(device string) {}
+
 // ParseMmLsFs returns the different devices in the GPFS cluster
 func ParseMmLsFs(output string) ([]string, error) {
 	var prefixFieldlocation = 0
