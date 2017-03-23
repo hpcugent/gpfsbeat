@@ -67,7 +67,10 @@ func (m *MmLsFilesetInfo) UpdateDevice(device string) {
 
 func parseMmLsFilesetCallback(fields []string, fieldMap map[string]int) ParseResult {
 
-	creation_time, _ := time.Parse("Mon Jan 2 15%3A04%3A05 2006", fields[fieldMap["created"]])
+	creationTime, err := time.Parse("Mon Jan 2 15%3A04%3A05 2006", fields[fieldMap["created"]])
+	if err != nil {
+		panic(err)
+	}
 
 	return &MmLsFilesetInfo{
 		version:           parseCertainInt(fields[fieldMap["version"]]),
@@ -78,7 +81,7 @@ func parseMmLsFilesetCallback(fields []string, fieldMap map[string]int) ParseRes
 		status:            fields[fieldMap["status"]],
 		path:              fields[fieldMap["path"]],
 		parentID:          parseCertainInt(fields[fieldMap["parentId"]]),
-		created:           creation_time,
+		created:           creationTime,
 		inodes:            parseCertainInt(fields[fieldMap["inodes"]]),
 		dataInKB:          parseCertainInt(fields[fieldMap["dataInKB"]]),
 		comment:           fields[fieldMap["comment"]],
@@ -92,4 +95,8 @@ func parseMmLsFilesetCallback(fields []string, fieldMap map[string]int) ParseRes
 		permChangeFlag:    fields[fieldMap["permChangeFlag"]],
 		freeInodes:        parseCertainInt(fields[fieldMap["freeInodes"]]),
 	}
+}
+
+func ParseMmLsFileset(device string, output string) ([]ParseResult, error) {
+	return nil, nil
 }
