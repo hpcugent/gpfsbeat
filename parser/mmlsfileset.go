@@ -1,6 +1,7 @@
 package parser
 
 import (
+	"strings"
 	"time"
 
 	"github.com/elastic/beats/libbeat/common"
@@ -18,8 +19,6 @@ type MmLsFilesetInfo struct {
 	path              string
 	parentID          int64
 	created           time.Time
-	inodes            int64
-	dataInKB          int64
 	comment           string
 	filesetMode       string
 	inodeSpace        int64
@@ -44,8 +43,6 @@ func (m *MmLsFilesetInfo) ToMapStr() common.MapStr {
 		"path":                m.path,
 		"parent_ID":           m.parentID,
 		"created":             m.created,
-		"inodes":              m.inodes,
-		"data_in_KB":          m.dataInKB,
 		"comment":             m.comment,
 		"fileset_mode":        m.filesetMode,
 		"inode_space":         m.inodeSpace,
@@ -72,6 +69,12 @@ func parseMmLsFilesetCallback(fields []string, fieldMap map[string]int) ParseRes
 		panic(err)
 	}
 
+	var parentID int64
+	parentID = -1
+	if fields[fieldMap["parentId"]] == "-" {
+		parentID = parseCertainInt(fields[fieldMap["parentId"]])
+	}
+
 	return &MmLsFilesetInfo{
 		version:           parseCertainInt(fields[fieldMap["version"]]),
 		filesystemName:    fields[fieldMap["filesystemName"]],
@@ -79,14 +82,12 @@ func parseMmLsFilesetCallback(fields []string, fieldMap map[string]int) ParseRes
 		ID:                parseCertainInt(fields[fieldMap["id"]]),
 		rootInode:         parseCertainInt(fields[fieldMap["rootInode"]]),
 		status:            fields[fieldMap["status"]],
-		path:              fields[fieldMap["path"]],
-		parentID:          parseCertainInt(fields[fieldMap["parentId"]]),
+		path:              strings.Replace(fields[fieldMap["path"]], "%2F", "/", -1),
+		parentID:          parentID,
 		created:           creationTime,
-		inodes:            parseCertainInt(fields[fieldMap["inodes"]]),
-		dataInKB:          parseCertainInt(fields[fieldMap["dataInKB"]]),
 		comment:           fields[fieldMap["comment"]],
 		filesetMode:       fields[fieldMap["filesetMode"]],
-		inodeSpace:        parseCertainInt(fields[fieldMap["inodesSpace"]]),
+		inodeSpace:        parseCertainInt(fields[fieldMap["inodeSpace"]]),
 		isInodeSpaceOwner: fields[fieldMap["isInodeSpaceOwner"]] == "1",
 		maxInodes:         parseCertainInt(fields[fieldMap["maxInodes"]]),
 		allocInodes:       parseCertainInt(fields[fieldMap["allocInodes"]]),
@@ -97,6 +98,18 @@ func parseMmLsFilesetCallback(fields []string, fieldMap map[string]int) ParseRes
 	}
 }
 
-func ParseMmLsFileset(device string, output string) ([]ParseResult, error) {
-	return nil, nil
+// ParseMmLsFileset converts the output lines to the desired format
+func ParseMmLsFileset(device string, output string) ([]MmLsFilesetInfo, error) {
+	var prefixFieldlocation = 0
+	var identifierFieldLocation = 1
+	var headerFieldLocation = 2
+
+	fs, _ := parseGpfsYOutput(prefixFieldlocation, identifierFieldLocation, headerFieldLocation, "mmlsfileset", output, parseMmLsFilesetCallback)
+
+	var filesetInfos = make([]MmLsFilesetInfo, 0, len(fs))
+	for _, f := range fs {
+		filesetInfos = append(filesetInfos, *(f.(*MmLsFilesetInfo)))
+	}
+
+	return filesetInfos, nil
 }

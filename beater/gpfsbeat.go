@@ -66,39 +66,57 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 
 		gpfsQuota, err := bt.MmRepQuota()
 		logp.Info("retrieved quota information from mmrepquota")
-		if err != nil {
-			panic("Could not get quota information")
-		}
-
-		for _, q := range gpfsQuota {
-			quota := q.ToMapStr()
-			event := common.MapStr{
-				"@timestamp": common.Time(time.Now()),
-				"type":       b.Name,
-				"counter":    counter,
-				"quota":      quota,
+		if err == nil {
+			for _, q := range gpfsQuota {
+				quota := q.ToMapStr()
+				event := common.MapStr{
+					"@timestamp": common.Time(time.Now()),
+					"type":       b.Name,
+					"counter":    counter,
+					"quota":      quota,
+				}
+				bt.client.PublishEvent(event)
 			}
-			bt.client.PublishEvent(event)
+			logp.Info("mmrepquota events sent")
+		} else {
+			logp.Err("Could not retrieve mmrequota information")
 		}
-		logp.Info("mmrepquota events sent")
 
 		mmdfinfos, err := bt.MmDf()
 		logp.Info("Retrieved usage information from mmdf")
-		if err != nil {
-			panic("Could not get mmdf information")
+		if err == nil {
+			for _, i := range mmdfinfos {
+				info := i.ToMapStr()
+				event := common.MapStr{
+					"@timestamp": common.Time(time.Now()),
+					"type":       b.Name,
+					"counter":    counter,
+					"mmdf":       info,
+				}
+				bt.client.PublishEvent(event)
+			}
+			logp.Info("mmdf events sent")
+		} else {
+			logp.Err("Could not retrieve mmdf information")
 		}
 
-		for _, i := range mmdfinfos {
-			info := i.ToMapStr()
-			event := common.MapStr{
-				"@timestamp": common.Time(time.Now()),
-				"type":       b.Name,
-				"counter":    counter,
-				"mmdf":       info,
+		mmlsfilesetinfos, err := bt.MmLsFileset()
+		logp.Info("Retrieved usage information from mmlsfileset")
+		if err == nil {
+			for _, i := range mmlsfilesetinfos {
+				info := i.ToMapStr()
+				event := common.MapStr{
+					"@timestamp":  common.Time(time.Now()),
+					"type":        b.Name,
+					"counter":     counter,
+					"mmlsfileset": info,
+				}
+				bt.client.PublishEvent(event)
 			}
-			bt.client.PublishEvent(event)
+			logp.Info("mmlsfileset events sent")
+		} else {
+			logp.Err("Could not retrieve mmlsfileset information")
 		}
-		logp.Info("mmdf events sent")
 
 		counter++
 	}

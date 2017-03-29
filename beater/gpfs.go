@@ -107,9 +107,9 @@ func (bt *Gpfsbeat) MmDf() ([]parser.ParseResult, error) {
 }
 
 // MmLsFileset is a wrapper around the mmlsfileset command
-func (bt *Gpfsbeat) MmLsFileset() ([]parser.ParseResult, error) {
+func (bt *Gpfsbeat) MmLsFileset() ([]parser.MmLsFilesetInfo, error) {
 
-	var mmlsfilesetinfos []parser.ParseResult
+	var mmlsfilesetinfos []parser.MmLsFilesetInfo
 
 	for _, device := range bt.config.Devices {
 
@@ -128,7 +128,7 @@ func (bt *Gpfsbeat) MmLsFileset() ([]parser.ParseResult, error) {
 			return nil, err
 		}
 
-		var fs []parser.ParseResult
+		var fs []parser.MmLsFilesetInfo
 		fs, err = parser.ParseMmLsFileset(device, out.String())
 		if err != nil {
 			return nil, errors.New("mmlsfileset info could not be parsed")
