@@ -19,7 +19,7 @@ type parseCallBack func([]string, map[string]int) ParseResult
 func parseCertainInt(s string) int64 {
 	v, err := strconv.ParseInt(s, 10, 64)
 	if err != nil {
-		logp.Err("Oops, could not parse an int from %s", s)
+		logp.Err("Oops, expected a number but could not parse an int from %s", s)
 		panic(err)
 	}
 	return v
