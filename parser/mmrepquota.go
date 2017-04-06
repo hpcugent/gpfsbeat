@@ -45,6 +45,16 @@ func (q *QuotaInfo) ToMapStr() common.MapStr {
 // UpdateDevice does not do anything, since we already have that information
 func (q *QuotaInfo) UpdateDevice(device string) {}
 
+// Kind returns the kind field contents
+func (q *QuotaInfo) Kind() string {
+	return q.kind
+}
+
+// Entity returns the entity field contents
+func (q *QuotaInfo) Entity() string {
+	return q.entity
+}
+
 func parseMmRepQuotaCallback(fields []string, fieldMap map[string]int) ParseResult {
 	qi := QuotaInfo{
 		filesystem: fields[fieldMap["filesystemName"]],

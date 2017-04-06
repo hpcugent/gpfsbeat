@@ -13,6 +13,7 @@ type Config struct {
 	MMLsFsCommand      string        `config:"mmlsfs"`
 	MMDfCommand        string        `config:"mmdf"`
 	MMLsFilesetCommand string        `config:"mmlsfileset"`
+	UserIDField        string        `config:"user_id_field"`
 }
 
 // DefaultConfig should be overridden
@@ -23,4 +24,5 @@ var DefaultConfig = Config{
 	MMLsFsCommand:      "mmlsfs",
 	MMDfCommand:        "mmdf",
 	MMLsFilesetCommand: "mmlsfileset",
+	UserIDField:        "none",
 }
