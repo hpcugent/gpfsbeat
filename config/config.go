@@ -13,7 +13,7 @@ type Config struct {
 	MMLsFsCommand      string        `config:"mmlsfs"`
 	MMDfCommand        string        `config:"mmdf"`
 	MMLsFilesetCommand string        `config:"mmlsfileset"`
-	UserIDField        string        `config:"user_id_field"`
+	UserIDField        string        `config:"__hpc_ugent_huppel_tierietoemba_user_id_field"`
 }
 
 // DefaultConfig should be overridden
