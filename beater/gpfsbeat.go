@@ -75,6 +75,9 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 					"counter":    counter,
 					"quota":      quota,
 				}
+				if bt.config.UserIDField != "none" && q.Kind() == "USR" {
+					event.Update(common.MapStr{bt.config.UserIDField: q.Entity()})
+				}
 				bt.client.PublishEvent(event)
 			}
 			logp.Info("mmrepquota events sent")
