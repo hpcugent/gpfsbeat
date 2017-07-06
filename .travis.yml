@@ -10,12 +10,10 @@ go:
 
 os:
   - linux
-  - osx
 
 env:
   matrix:
     - TARGETS="check"
-    - TARGETS="testsuite"
 
   global:
     # Cross-compile for amd64 only to speed up testing.
