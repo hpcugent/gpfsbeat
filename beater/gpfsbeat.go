@@ -8,7 +8,6 @@ import (
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
-	"github.com/elastic/beats/libbeat/publisher"
 
 	"github.com/hpcugent/gpfsbeat/config"
 )
@@ -17,7 +16,7 @@ import (
 type Gpfsbeat struct {
 	done   chan struct{}
 	config config.Config
-	client publisher.Client
+	client beat.Client
 }
 
 // New Creates beater
@@ -54,7 +53,11 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 	logp.Info("gpfsbeat is running! Hit CTRL-C to stop it.")
 
-	bt.client = b.Publisher.Connect()
+	var err error
+	bt.client, err = b.Publisher.Connect()
+	if err != nil {
+		return err
+	}
 	ticker := time.NewTicker(bt.config.Period)
 	counter := 1
 	for {
@@ -69,13 +72,16 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		if err == nil {
 			for _, q := range gpfsQuota {
 				quota := q.ToMapStr()
-				event := common.MapStr{
-					"@timestamp": common.Time(time.Now()),
-					"type":       b.Name,
-					"counter":    counter,
-					"quota":      quota,
+				event := beat.Event{
+					Timestamp: time.Now(),
+					Fields: common.MapStr{
+						"@timestamp": common.Time(time.Now()),
+						"type":       b.Info.Name,
+						"counter":    counter,
+						"quota":      quota,
+					},
 				}
-				bt.client.PublishEvent(event)
+				bt.client.Publish(event)
 			}
 			logp.Info("mmrepquota events sent")
 		} else {
@@ -87,13 +93,16 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		if err == nil {
 			for _, i := range mmdfinfos {
 				info := i.ToMapStr()
-				event := common.MapStr{
-					"@timestamp": common.Time(time.Now()),
-					"type":       b.Name,
-					"counter":    counter,
-					"mmdf":       info,
+				event := beat.Event {
+					Timestamp: time.Now(),
+					Fields: common.MapStr{
+						"@timestamp": common.Time(time.Now()),
+						"type":       b.Info.Name,
+						"counter":    counter,
+						"mmdf":       info,
+					},
 				}
-				bt.client.PublishEvent(event)
+				bt.client.Publish(event)
 			}
 			logp.Info("mmdf events sent")
 		} else {
@@ -105,13 +114,16 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		if err == nil {
 			for _, i := range mmlsfilesetinfos {
 				info := i.ToMapStr()
-				event := common.MapStr{
-					"@timestamp":  common.Time(time.Now()),
-					"type":        b.Name,
-					"counter":     counter,
-					"mmlsfileset": info,
+				event := beat.Event {
+					Timestamp: time.Now(),
+					Fields: common.MapStr{
+						"@timestamp":  common.Time(time.Now()),
+						"type":        b.Info.Name,
+						"counter":     counter,
+						"mmlsfileset": info,
+					},
 				}
-				bt.client.PublishEvent(event)
+				bt.client.Publish(event)
 			}
 			logp.Info("mmlsfileset events sent")
 		} else {
