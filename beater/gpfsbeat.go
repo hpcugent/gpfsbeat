@@ -93,7 +93,7 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		if err == nil {
 			for _, i := range mmdfinfos {
 				info := i.ToMapStr()
-				event := beat.Event {
+				event := beat.Event{
 					Timestamp: time.Now(),
 					Fields: common.MapStr{
 						"@timestamp": common.Time(time.Now()),
@@ -114,7 +114,7 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		if err == nil {
 			for _, i := range mmlsfilesetinfos {
 				info := i.ToMapStr()
-				event := beat.Event {
+				event := beat.Event{
 					Timestamp: time.Now(),
 					Fields: common.MapStr{
 						"@timestamp":  common.Time(time.Now()),
