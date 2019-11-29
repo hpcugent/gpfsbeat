@@ -1,11 +1,7 @@
-################### Gpfsbeat Configuration Example #########################
+################### {Beat} Configuration Example #########################
 
-############################# Gpfsbeat ######################################
+############################# {Beat} ######################################
 
 gpfsbeat:
   # Defines how often an event is sent to the output
-  period: 60s
-  devices: ['all']
-  metrics:
-      - quota
-      - filesets
+  period: 1s

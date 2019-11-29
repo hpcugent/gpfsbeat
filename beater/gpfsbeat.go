@@ -8,31 +8,30 @@ import (
 	"github.com/elastic/beats/libbeat/beat"
 	"github.com/elastic/beats/libbeat/common"
 	"github.com/elastic/beats/libbeat/logp"
-	"github.com/elastic/beats/libbeat/publisher"
 
-	"github.com/hpcugent/gpfsbeat/config"
+	"github.com/itkovian/gpfsbeat/config"
 )
 
-// Gpfsbeat generated structure
-type Gpfsbeat struct {
+// gpfsbeat configuration.
+type gpfsbeat struct {
 	done   chan struct{}
 	config config.Config
-	client publisher.Client
+	client beat.Client
 }
 
-// New Creates beater
+// New creates an instance of gpfsbeat.
 func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
-	config := config.DefaultConfig
-	if err := cfg.Unpack(&config); err != nil {
+	c := config.DefaultConfig
+	if err := cfg.Unpack(&c); err != nil {
 		return nil, fmt.Errorf("Error reading config file: %v", err)
 	}
 
-	logp.Info("Gathering information from devices %q", config.Devices)
-	logp.Info("Running every %d nanoseconds", config.Period)
+	logp.Info("Gathering information from devices %q", c.Devices)
+	logp.Info("Running every %d nanoseconds", c.Period)
 
-	bt := &Gpfsbeat{
+	bt := &gpfsbeat{
 		done:   make(chan struct{}),
-		config: config,
+		config: c,
 	}
 
 	// make sure we get the devices, request them from mmlsfs is they are not provided explicitly
@@ -50,11 +49,16 @@ func New(b *beat.Beat, cfg *common.Config) (beat.Beater, error) {
 	return bt, nil
 }
 
-// Run does the actual things
-func (bt *Gpfsbeat) Run(b *beat.Beat) error {
+// Run starts gpfsbeat.
+func (bt *gpfsbeat) Run(b *beat.Beat) error {
 	logp.Info("gpfsbeat is running! Hit CTRL-C to stop it.")
 
-	bt.client = b.Publisher.Connect()
+	var err error
+	bt.client, err = b.Publisher.Connect()
+	if err != nil {
+		return err
+	}
+
 	ticker := time.NewTicker(bt.config.Period)
 	counter := 1
 	for {
@@ -69,13 +73,15 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		if err == nil {
 			for _, q := range gpfsQuota {
 				quota := q.ToMapStr()
-				event := common.MapStr{
-					"@timestamp": common.Time(time.Now()),
-					"type":       b.Name,
-					"counter":    counter,
-					"quota":      quota,
+				event := beat.Event{
+					Timestamp: time.Now(),
+					Fields: common.MapStr{
+						"type":    b.Info.Name,
+						"counter": counter,
+						"quota":   quota,
+					},
 				}
-				bt.client.PublishEvent(event)
+				bt.client.Publish(event)
 			}
 			logp.Info("mmrepquota events sent")
 		} else {
@@ -87,13 +93,15 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		if err == nil {
 			for _, i := range mmdfinfos {
 				info := i.ToMapStr()
-				event := common.MapStr{
-					"@timestamp": common.Time(time.Now()),
-					"type":       b.Name,
-					"counter":    counter,
-					"mmdf":       info,
+				event := beat.Event{
+					Timestamp: time.Now(),
+					Fields: common.MapStr{
+						"type":    b.Info.Name,
+						"counter": counter,
+						"mmdf":    info,
+					},
 				}
-				bt.client.PublishEvent(event)
+				bt.client.Publish(event)
 			}
 			logp.Info("mmdf events sent")
 		} else {
@@ -105,13 +113,15 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 		if err == nil {
 			for _, i := range mmlsfilesetinfos {
 				info := i.ToMapStr()
-				event := common.MapStr{
-					"@timestamp":  common.Time(time.Now()),
-					"type":        b.Name,
-					"counter":     counter,
-					"mmlsfileset": info,
+				event := beat.Event{
+					Timestamp: time.Now(),
+					Fields: common.MapStr{
+						"type":        b.Info.Name,
+						"counter":     counter,
+						"mmlsfileset": info,
+					},
 				}
-				bt.client.PublishEvent(event)
+				bt.client.Publish(event)
 			}
 			logp.Info("mmlsfileset events sent")
 		} else {
@@ -122,8 +132,8 @@ func (bt *Gpfsbeat) Run(b *beat.Beat) error {
 	}
 }
 
-// Stop shuts down the beat
-func (bt *Gpfsbeat) Stop() {
+// Stop stops gpfsbeat.
+func (bt *gpfsbeat) Stop() {
 	bt.client.Close()
 	close(bt.done)
 }

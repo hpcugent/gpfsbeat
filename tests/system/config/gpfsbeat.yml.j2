@@ -19,7 +19,7 @@ output:
 
     # Name of the generated files. The default is `gpfsbeat` and it generates
     # files: `gpfsbeat`, `gpfsbeat.1`, `gpfsbeat.2`, etc.
-    filename: "{{ output_file_filename|default("gpfsbeat") }}"
+    filename: {{ output_file_filename|default("gpfsbeat") }}
 
     # Maximum size in kilobytes of each file. When this size is reached, the files are
     # rotated. The default value is 10 MB.
@@ -28,7 +28,7 @@ output:
     # Maximum number of files under path. When this number of files is reached, the
     # oldest file is deleted and the rest are shifted from last to first. The default
     # is 7 files.
-    number_of_files: 5
+    #number_of_files: 7
 
 
 
