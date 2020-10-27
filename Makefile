@@ -1,52 +1,20 @@
 BEAT_NAME=gpfsbeat
-BEAT_PATH=github.com/hpcugent/gpfsbeat
-BEAT_DESCRIPTION=gpfsbeat is an Elastic Beat that parses GPFS mmrepquota e.a. and sends them to ELK.
-BEAT_URL=https://github.com/hpcugent/gpfsbeat
-BEAT_DOC_URL=https://github.com/hpcugent/gpfsbeat
-BEAT_LICENSE=ASL 2.0
-BEAT_VENDOR=HPCUgent
-
-
+BEAT_PATH=github.com/itkovian/gpfsbeat
+BEAT_GOPATH=$(firstword $(subst :, ,${GOPATH}))
 SYSTEM_TESTS=false
 TEST_ENVIRONMENT=false
-ES_BEATS?=./vendor/github.com/elastic/beats
-GOPACKAGES=$(shell glide novendor)
-PREFIX?=.
+ES_BEATS_IMPORT_PATH=github.com/elastic/beats/v7
+ES_BEATS?=$(shell go list -m -f '{{.Dir}}' ${ES_BEATS_IMPORT_PATH})
+LIBBEAT_MAKEFILE=$(ES_BEATS)/libbeat/scripts/Makefile
+GOPACKAGES=$(shell go list ${BEAT_PATH}/... | grep -v /tools)
+GOBUILD_FLAGS=-i -ldflags "-X ${ES_BEATS_IMPORT_PATH}/libbeat/version.buildTime=$(NOW) -X ${ES_BEATS_IMPORT_PATH}/libbeat/version.commit=$(COMMIT_ID)"
+MAGE_IMPORT_PATH=github.com/magefile/mage
+NO_COLLECT=true
+CHECK_HEADERS_DISABLED=true
 
 # Path to the libbeat Makefile
--include $(ES_BEATS)/libbeat/scripts/Makefile
+-include $(LIBBEAT_MAKEFILE)
 
-# Initial beat setup
-.PHONY: setup
-setup: copy-vendor
-	make update
-
-# Copy beats into vendor directory
 .PHONY: copy-vendor
 copy-vendor:
-	mkdir -p vendor/github.com/elastic/
-	cp -R ${GOPATH}/src/github.com/elastic/beats vendor/github.com/elastic/
-	rm -rf vendor/github.com/elastic/beats/.git
-
-.PHONY: git-init
-git-init:
-	git init
-	git add README.md CONTRIBUTING.md
-	git commit -m "Initial commit"
-	git add LICENSE
-	git commit -m "Add the LICENSE"
-	git add .gitignore
-	git commit -m "Add git settings"
-	git add .
-	git reset -- .travis.yml
-	git commit -m "Add gpfsbeat"
-	git add .travis.yml
-	git commit -m "Add Travis CI"
-
-# This is called by the beats packer before building starts
-.PHONY: before-build
-before-build:
-
-# Collects all dependencies and then calls update
-.PHONY: collect
-collect:
+	mage vendorUpdate

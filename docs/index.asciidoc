@@ -1,5 +1,5 @@
-= Gpfsbeat Docs
+= {Beat} Docs
 
-Welcome to the Gpfsbeat documentation.
+Welcome to the {Beat} documentation.
 
 

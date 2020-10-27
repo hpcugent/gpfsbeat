@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/elastic/beats/libbeat/common"
+	"github.com/elastic/beats/v7/libbeat/common"
 )
 
 // MmLsFilesetInfo contains relevant information about GPFS filesets. For now, we ignore AFM info, as we do no use it.

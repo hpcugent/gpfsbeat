@@ -7,19 +7,19 @@ import (
 	"os/exec"
 	"time"
 
-	"github.com/hpcugent/gpfsbeat/parser"
-
-	"github.com/elastic/beats/libbeat/logp"
+	"github.com/elastic/beats/v7/libbeat/logp"
+	"github.com/itkovian/gpfsbeat/parser"
 )
 
 var debugf = logp.MakeDebug("gpfs")
+
 var mmrepquotaTimeOut = 5 * 60 * 1000 * time.Millisecond
 var mmlsfsTimeout = 1 * 60 * 1000 * time.Millisecond
 var mmdfTimeout = 5 * 60 * 1000 * time.Millisecond
 var mmlsfilesetTimeout = 5 * 60 * 1000 * time.Millisecond
 
 // MmLsFs returns an array of the devices known to the GPFS cluster
-func (bt *Gpfsbeat) MmLsFs() ([]string, error) {
+func (bt *gpfsbeat) MmLsFs() ([]string, error) {
 	// get the filesystems from mmlsfs
 	ctx, cancel := context.WithTimeout(context.Background(), mmlsfsTimeout)
 	defer cancel()
@@ -44,8 +44,7 @@ func (bt *Gpfsbeat) MmLsFs() ([]string, error) {
 }
 
 // MmRepQuota is a wrapper around the mmrepquota command
-func (bt *Gpfsbeat) MmRepQuota() ([]parser.QuotaInfo, error) {
-
+func (bt *gpfsbeat) MmRepQuota() ([]parser.QuotaInfo, error) {
 	var quotas []parser.QuotaInfo
 
 	for _, device := range bt.config.Devices {
@@ -76,7 +75,7 @@ func (bt *Gpfsbeat) MmRepQuota() ([]parser.QuotaInfo, error) {
 }
 
 // MmDf is a wrapper around the mmdf command
-func (bt *Gpfsbeat) MmDf() ([]parser.ParseResult, error) {
+func (bt *gpfsbeat) MmDf() ([]parser.ParseResult, error) {
 
 	var mmdfinfos []parser.ParseResult
 
@@ -107,7 +106,7 @@ func (bt *Gpfsbeat) MmDf() ([]parser.ParseResult, error) {
 }
 
 // MmLsFileset is a wrapper around the mmlsfileset command
-func (bt *Gpfsbeat) MmLsFileset() ([]parser.MmLsFilesetInfo, error) {
+func (bt *gpfsbeat) MmLsFileset() ([]parser.MmLsFilesetInfo, error) {
 
 	var mmlsfilesetinfos []parser.MmLsFilesetInfo
 
@@ -137,5 +136,4 @@ func (bt *Gpfsbeat) MmLsFileset() ([]parser.MmLsFilesetInfo, error) {
 	}
 
 	return mmlsfilesetinfos, nil
-
 }
