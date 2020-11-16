@@ -10,7 +10,7 @@ replace (
 	github.com/docker/go-plugins-helpers => github.com/elastic/go-plugins-helpers v0.0.0-20200207104224-bdf17607b79f
 	github.com/dop251/goja => github.com/andrewkroh/goja v0.0.0-20190128172624-dd2ac4456e20
 	github.com/dop251/goja_nodejs => github.com/dop251/goja_nodejs v0.0.0-20171011081505-adff31b136e6
-	github.com/elastic/beats/v7 => github.com/itkovian/beats/v7 v7.0.0-20201113202925-5a80e1e3f29e
+	github.com/elastic/beats/v7 => github.com/itkovian/beats/v7 v7.0.0-20201116104724-a16d21c7836b
 	github.com/fsnotify/fsevents => github.com/elastic/fsevents v0.0.0-20181029231046-e1d381a4d270
 	github.com/fsnotify/fsnotify => github.com/adriansr/fsnotify v0.0.0-20180417234312-c9bbe1f46f1d
 	github.com/google/gopacket => github.com/adriansr/gopacket v1.1.18-0.20200327165309-dd62abfa8a41
@@ -30,7 +30,7 @@ require (
 	github.com/fatih/color v1.9.0 // indirect
 	github.com/go-sourcemap/sourcemap v2.1.3+incompatible // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
-	//github.com/itkovian/beats/v7 v7.0.0-20201113202925-5a80e1e3f29e // indirect
+	//github.com/itkovian/beats/v7 v7.0.0-20201116104724-a16d21c7836b // indirect
 	github.com/josephspurrier/goversioninfo v1.2.0 // indirect
 	github.com/magefile/mage v1.10.0
 	github.com/mattn/go-colorable v0.1.8 // indirect
