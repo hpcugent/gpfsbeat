@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/elastic/beats/v7/libbeat/logp"
-	"github.com/itkovian/gpfsbeat/parser"
+	"github.com/hpcugent/gpfsbeat/parser"
 )
 
 var debugf = logp.MakeDebug("gpfs")

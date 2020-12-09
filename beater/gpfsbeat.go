@@ -9,7 +9,7 @@ import (
 	"github.com/elastic/beats/v7/libbeat/common"
 	"github.com/elastic/beats/v7/libbeat/logp"
 
-	"github.com/itkovian/gpfsbeat/config"
+	"github.com/hpcugent/gpfsbeat/config"
 )
 
 // gpfsbeat configuration.

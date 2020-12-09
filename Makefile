@@ -1,5 +1,5 @@
 BEAT_NAME=gpfsbeat
-BEAT_PATH=github.com/itkovian/gpfsbeat
+BEAT_PATH=github.com/hpcugent/gpfsbeat
 BEAT_GOPATH=$(firstword $(subst :, ,${GOPATH}))
 SYSTEM_TESTS=false
 TEST_ENVIRONMENT=false

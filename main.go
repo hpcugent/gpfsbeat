@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"github.com/itkovian/gpfsbeat/cmd"
+	"github.com/hpcugent/gpfsbeat/cmd"
 
-	_ "github.com/itkovian/gpfsbeat/include"
+	_ "github.com/hpcugent/gpfsbeat/include"
 )
 
 func main() {

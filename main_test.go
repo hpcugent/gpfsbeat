@@ -6,7 +6,7 @@ import (
 	"flag"
 	"testing"
 
-	"github.com/itkovian/gpfsbeat/cmd"
+	"github.com/hpcugent/gpfsbeat/cmd"
 )
 
 var systemTest *bool

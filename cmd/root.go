@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/itkovian/gpfsbeat/beater"
+	"github.com/hpcugent/gpfsbeat/beater"
 
 	cmd "github.com/elastic/beats/v7/libbeat/cmd"
 	"github.com/elastic/beats/v7/libbeat/cmd/instance"
