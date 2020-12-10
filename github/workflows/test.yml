@@ -1,0 +1,31 @@
+name: build test
+on:
+  push:
+    branches:
+    - master
+  pull-request:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout source
+      uses: actions/checkout@v2
+    - name: Setup Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ‘1.15.0’
+    - name: Install dependencies
+      run: |
+        go get -u -d github.com/magefile/mage
+        cd $GOPATH/src/github.com/magefile/mage
+        go run bootstrap.go
+        go get -u golang.org/x/lint/golint
+    - name: Run build
+      run: |
+        mage build
+    - name: Lint
+      run: |
+        golint .
