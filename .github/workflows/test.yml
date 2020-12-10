@@ -19,9 +19,7 @@ jobs:
         go-version: 1.15.0
     - name: Install dependencies
       run: |
-        go get -u -d github.com/magefile/mage
-        cd $GOPATH/src/github.com/magefile/mage
-        go run bootstrap.go
+        go get github.com/magefile/mage
         go get -u golang.org/x/lint/golint
     - name: Run build
       run: |
