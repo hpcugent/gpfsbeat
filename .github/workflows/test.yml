@@ -22,9 +22,9 @@ jobs:
         go get -u golang.org/x/lint/golint
     - name: Run Mage
       uses: magefile/mage-action@v1
-        with:
-          version: latest
-          args: build
+      with:
+        version: latest
+        args: build
     - name: Run build
       run: |
         mage build
