@@ -36,7 +36,16 @@ To build the binary for {Beat} run the command below. This will generate a binar
 in the same directory with the name gpfsbeat.
 
 ```
-make
+mage build
+```
+
+### Create RPM
+
+- install go-bin-rpm (https://github.com/mh-cbon/go-bin-rpm)
+- run
+
+```
+go-bin-rpm generate -f rpm.json --version 7.10.0 -b ~/rpmbuild/ -o ~/rpmbuild/ -a x86_64
 ```
 
 
