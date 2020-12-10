@@ -19,8 +19,12 @@ jobs:
         go-version: 1.15.0
     - name: Install dependencies
       run: |
-        go get github.com/magefile/mage
         go get -u golang.org/x/lint/golint
+    - name: Run Mage
+      uses: magefile/mage-action@v1
+        with:
+          version: latest
+          args: build
     - name: Run build
       run: |
         mage build
