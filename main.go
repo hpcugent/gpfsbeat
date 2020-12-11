@@ -3,14 +3,13 @@ package main
 import (
 	"os"
 
-	"github.com/elastic/beats/libbeat/beat"
+	"github.com/hpcugent/gpfsbeat/cmd"
 
-	"github.com/hpcugent/gpfsbeat/beater"
+	_ "github.com/hpcugent/gpfsbeat/include"
 )
 
 func main() {
-	err := beat.Run("gpfsbeat", "", beater.New)
-	if err != nil {
+	if err := cmd.RootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}
 }

@@ -1,6 +1,6 @@
 package parser
 
-import "github.com/elastic/beats/libbeat/common"
+import "github.com/elastic/beats/v7/libbeat/common"
 
 // MmLsFsInfo contains the relevant information from a single mmlsfs run
 type MmLsFsInfo struct {

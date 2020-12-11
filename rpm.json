@@ -1,0 +1,31 @@
+{
+  "name": "gpfsbeat",
+  "version": "!version!",
+  "arch": "!arch!",
+  "release": "1",
+  "summary": "beat for logging gpfs usage info",
+  "group": "System/Monitoring",
+  "license": "Apache 2.0",
+  "url": "https://github.com/hpcugent/gpfsbeat",
+  "description": "GPFS usage logging",
+  "files": [
+    {
+      "from": "gpfsbeat",
+      "to": "%{_bindir}/",
+      "base": "",
+      "type": ""
+    },
+    {
+      "from": "gpfsbeat.yml",
+      "to": "/etc/!name!/",
+      "base": "",
+      "type": ""
+    },
+    {
+      "from": "rpm/gpfsbeat.service",
+      "to": "%{_unitdir}/",
+      "base": "rpm"
+    }
+  ]
+}
+

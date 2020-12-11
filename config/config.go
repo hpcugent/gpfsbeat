@@ -3,7 +3,9 @@
 
 package config
 
-import "time"
+import (
+	"time"
+)
 
 // Config items
 type Config struct {

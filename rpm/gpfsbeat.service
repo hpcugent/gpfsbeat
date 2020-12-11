@@ -1,0 +1,12 @@
+[Unit]
+Description=gpfsbeat
+Documentation=https://github.com/hpcugent/gpfsbeat
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+ExecStart=/usr/share/gpfsbeat/bin/gpfsbeat -c /etc/gpfsbeat/gpfsbeat.yml -path.home /usr/share/gpfsbeat -path.config /etc/gpfsbeat -path.data /var/lib/gpfsbeat -path.logs /var/log/gpfsbeat
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
