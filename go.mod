@@ -4,7 +4,7 @@ go 1.15
 
 replace (
 	github.com/Azure/go-autorest => github.com/Azure/go-autorest v12.2.0+incompatible
-    github.com/Shopify/sarama => github.com/elastic/sarama v1.19.1-0.20200629123429-0e7b69039eec
+	github.com/Shopify/sarama => github.com/elastic/sarama v1.19.1-0.20200629123429-0e7b69039eec
 	github.com/cucumber/godog => github.com/cucumber/godog v0.8.1
 	github.com/docker/docker => github.com/docker/engine v0.0.0-20191113042239-ea84732a7725
 	github.com/docker/go-plugins-helpers => github.com/elastic/go-plugins-helpers v0.0.0-20200207104224-bdf17607b79f
@@ -19,7 +19,6 @@ replace (
 )
 
 require (
-	github.com/Sirupsen/logrus v1.0.1-0.20170608221441-85b1699d5056 // indirect
 	github.com/akavel/rsrc v0.9.0 // indirect
 	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/dop251/goja v0.0.0-20201022115936-e21ccf39bfce // indirect
@@ -41,11 +40,9 @@ require (
 	github.com/tsg/go-daemon v0.0.0-20200207173439-e704b93fd89b
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.16.0 // indirect
-	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897 // indirect
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b
-	golang.org/x/net v0.0.0-20201026091529-146b70c837a4 // indirect
-	golang.org/x/sys v0.0.0-20201027090413-e1471140ff15 // indirect
-	golang.org/x/tools v0.0.0-20201026223136-e84cfc6dd5ca
+	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/tools v0.6.0
 	honnef.co/go/tools v0.0.1-2020.1.6 // indirect
 	howett.net/plist v0.0.0-20201026045517-117a925f2150 // indirect
 )
