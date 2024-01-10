@@ -1,6 +1,6 @@
 module github.com/hpcugent/gpfsbeat
 
-go 1.15
+go 1.21
 
 replace (
 	github.com/Azure/go-autorest => github.com/Azure/go-autorest v12.2.0+incompatible
