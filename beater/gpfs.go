@@ -11,8 +11,6 @@ import (
 	"github.com/hpcugent/gpfsbeat/parser"
 )
 
-var debugf = logp.MakeDebug("gpfs")
-
 var mmrepquotaTimeOut = 5 * 60 * 1000 * time.Millisecond
 var mmlsfsTimeout = 1 * 60 * 1000 * time.Millisecond
 var mmdfTimeout = 5 * 60 * 1000 * time.Millisecond
