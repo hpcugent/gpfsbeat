@@ -154,9 +154,9 @@ require (
 	gopkg.in/yaml.v2 v2.3.0 // indirect
 	honnef.co/go/tools v0.0.1-2020.1.6 // indirect
 	howett.net/plist v0.0.0-20201026045517-117a925f2150 // indirect
-	k8s.io/api v0.18.3 // indirect
-	k8s.io/apimachinery v0.18.3 // indirect
-	k8s.io/client-go v0.18.3 // indirect
+	k8s.io/api v0.18.14 // indirect
+	k8s.io/apimachinery v0.18.14 // indirect
+	k8s.io/client-go v0.18.14 // indirect
 	k8s.io/klog v1.0.0 // indirect
 	k8s.io/utils v0.0.0-20200324210504-a9aa75ae1b89 // indirect
 	sigs.k8s.io/structured-merge-diff/v3 v3.0.0 // indirect
